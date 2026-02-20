@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oceanside Table Tennis</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green:   #1e7a3c;
+      --green-d: #155c2d;
+      --green-l: #d4edda;
+      --gold:    #f5c842;
+      --dark:    #1a1a1a;
+      --mid:     #444;
+      --light:   #f4f4f2;
+      --white:   #ffffff;
+      --radius:  10px;
+      --shadow:  0 4px 20px rgba(0,0,0,.12);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: var(--dark);
+      background: var(--light);
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, video { display: block; max-width: 100%; }
+    h2.section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: .4rem;
+      color: var(--green-d);
+    }
+    .section-sub {
+      text-align: center;
+      color: var(--mid);
+      margin-bottom: 2.5rem;
+    }
+    section { padding: 5rem 1.5rem; }
+    section:nth-child(even) { background: var(--white); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--green-d);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .9rem 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,.3);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,.85);
+      font-size: .9rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 88vh;
+      background:
+        linear-gradient(to bottom, rgba(21,92,45,.82), rgba(21,92,45,.62)),
+        url('https://images.unsplash.com/photo-1611251126028-fd84a8f04c84?w=1600&q=80') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--white);
+      padding: 2rem 1.5rem;
+    }
+    #hero .ping-icon { font-size: 4rem; margin-bottom: 1rem; }
+    #hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    #hero h1 span { color: var(--gold); }
+    #hero p {
+      margin-top: 1rem;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      opacity: .9;
+      max-width: 560px;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: .85rem 2.2rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+    .btn-gold { background: var(--gold); color: var(--dark); }
+
+    /* ── Announcements ── */
+    .announcements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .announce-card {
+      background: var(--white);
+      border-left: 5px solid var(--green);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      box-shadow: var(--shadow);
+      transition: transform .2s;
+    }
+    .announce-card:hover { transform: translateY(-3px); }
+    .announce-card .tag {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--green-l);
+      color: var(--green-d);
+      padding: .2rem .6rem;
+      border-radius: 20px;
+      margin-bottom: .6rem;
+    }
+    .announce-card h3 { font-size: 1.05rem; margin-bottom: .4rem; }
+    .announce-card p { font-size: .9rem; color: var(--mid); }
+    .announce-card .date {
+      margin-top: .8rem;
+      font-size: .78rem;
+      color: #999;
+    }
+
+    /* ── Gallery ── */
+    .gallery-tabs {
+      display: flex;
+      justify-content: center;
+      gap: .8rem;
+      margin-bottom: 2rem;
+    }
+    .tab-btn {
+      padding: .5rem 1.4rem;
+      border-radius: 50px;
+      border: 2px solid var(--green);
+      background: transparent;
+      color: var(--green-d);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--green);
+      color: var(--white);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .gallery-item {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: #111;
+      position: relative;
+      aspect-ratio: 4/3;
+      cursor: pointer;
+    }
+    .gallery-item img,
+    .gallery-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .4s;
+    }
+    .gallery-item:hover img,
+    .gallery-item:hover video { transform: scale(1.05); }
+    .gallery-item .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      opacity: 0;
+      transition: opacity .3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 2.5rem;
+    }
+    .gallery-item:hover .overlay { opacity: 1; }
+    [data-type="video"] { display: none; }
+
+    /* Lightbox */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0,0,0,.92);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox-inner {
+      position: relative;
+      max-width: 900px;
+      width: 100%;
+    }
+    #lightbox-inner img,
+    #lightbox-inner video {
+      width: 100%;
+      border-radius: var(--radius);
+      max-height: 80vh;
+      object-fit: contain;
+    }
+    #lightbox-close {
+      position: absolute;
+      top: -2.2rem;
+      right: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.8rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* ── Hours & Location ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .info-card {
+      background: var(--light);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+    .info-card h3 {
+      font-size: 1.15rem;
+      color: var(--green-d);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: 1.2rem;
+    }
+    .hours-table { width: 100%; border-collapse: collapse; }
+    .hours-table td { padding: .4rem 0; font-size: .95rem; }
+    .hours-table td:last-child { text-align: right; color: var(--mid); }
+    .hours-table tr.closed td { color: #bbb; text-decoration: line-through; }
+    .hours-table tr.today td { font-weight: 700; color: var(--green-d); }
+    .address-block p { font-size: .95rem; line-height: 1.8; color: var(--mid); }
+    .map-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      margin-top: 1rem;
+      color: var(--green);
+      font-weight: 600;
+      font-size: .9rem;
+    }
+    .map-link:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,.6);
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: .85rem;
+    }
+    footer strong { color: var(--white); }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 56px; left: 0; right: 0; background: var(--green-d); padding: 1rem 2rem 1.5rem; gap: 1.2rem; }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      section { padding: 3.5rem 1.2rem; }
+      h2.section-title { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span>&#127955;</span> <span>Oceanside</span>&nbsp;TT
+  </a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#announcements">Announcements</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#hours">Hours &amp; Location</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── Hero ── -->
+<section id="hero">
+  <div class="ping-icon">&#127955;</div>
+  <h1>Welcome to <span>Oceanside</span><br>Table Tennis</h1>
+  <p>A community for players of all skill levels — beginners, competitive players, and everyone in between.</p>
+  <a href="#announcements" class="btn btn-gold">See What's New</a>
+</section>
+
+<!-- ── Announcements ── -->
+<section id="announcements">
+  <h2 class="section-title">Announcements</h2>
+  <p class="section-sub">Stay up to date with club news and upcoming events</p>
+  <div class="announcements-grid">
+
+    <div class="announce-card">
+      <span class="tag">Tournament</span>
+      <h3>Spring Singles Championship</h3>
+      <p>Registration is now open for our annual Spring Singles Championship. Open to all skill levels. Prizes for top 3 in each division.</p>
+      <div class="date">Mar 15, 2026 &mdash; 10:00 AM</div>
+    </div>
+
+    <div class="announce-card">
+      <span class="tag">New Hours</span>
+      <h3>Extended Friday Hours Starting March</h3>
+      <p>Beginning March 1st, the club will stay open until 11 PM on Fridays to accommodate evening players. Free play from 9–11 PM.</p>
+      <div class="date">Effective Mar 1, 2026</div>
+    </div>
+
+    <div class="announce-card">
+      <span class="tag">Coaching</span>
+      <h3>Junior Training Program Enrollment</h3>
+      <p>Spots are still available in our Saturday morning junior training sessions for ages 8–16. Led by certified coaches.</p>
+      <div class="date">Ongoing &mdash; Saturdays 9 AM</div>
+    </div>
+
+    <div class="announce-card">
+      <span class="tag">Maintenance</span>
+      <h3>New Tables Installed</h3>
+      <p>We have added 4 new Butterfly Centrefold 25 tables to the main hall, bringing our total to 14 tables.</p>
+      <div class="date">Feb 10, 2026</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Gallery ── -->
+<section id="gallery">
+  <h2 class="section-title">Gallery</h2>
+  <p class="section-sub">Photos and videos from our club and events</p>
+
+  <div class="gallery-tabs">
+    <button class="tab-btn active" data-filter="photo">Photos</button>
+    <button class="tab-btn" data-filter="video">Videos</button>
+    <button class="tab-btn" data-filter="all">All</button>
+  </div>
+
+  <div class="gallery-grid" id="gallery-grid">
+
+    <!-- Photos — replace src with real images -->
+    <div class="gallery-item" data-type="photo" data-src="https://images.unsplash.com/photo-1611251126028-fd84a8f04c84?w=900&q=80">
+      <img src="https://images.unsplash.com/photo-1611251126028-fd84a8f04c84?w=600&q=80" alt="Club match in progress" loading="lazy" />
+      <div class="overlay">&#128269;</div>
+    </div>
+
+    <div class="gallery-item" data-type="photo" data-src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=900&q=80">
+      <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=600&q=80" alt="Tournament play" loading="lazy" />
+      <div class="overlay">&#128269;</div>
+    </div>
+
+    <div class="gallery-item" data-type="photo" data-src="https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=900&q=80">
+      <img src="https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&q=80" alt="Practice session" loading="lazy" />
+      <div class="overlay">&#128269;</div>
+    </div>
+
+    <div class="gallery-item" data-type="photo" data-src="https://images.unsplash.com/photo-1547941126-3d5322b218b0?w=900&q=80">
+      <img src="https://images.unsplash.com/photo-1547941126-3d5322b218b0?w=600&q=80" alt="Club tables" loading="lazy" />
+      <div class="overlay">&#128269;</div>
+    </div>
+
+    <!-- Videos — replace src with real video files or YouTube embeds -->
+    <div class="gallery-item" data-type="video" style="background:#000;">
+      <video muted loop preload="none"
+             poster="https://images.unsplash.com/photo-1611251126028-fd84a8f04c84?w=600&q=60">
+        <!-- <source src="your-video-1.mp4" type="video/mp4"> -->
+      </video>
+      <div class="overlay">&#9654;</div>
+    </div>
+
+    <div class="gallery-item" data-type="video" style="background:#000;">
+      <video muted loop preload="none"
+             poster="https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&q=60">
+        <!-- <source src="your-video-2.mp4" type="video/mp4"> -->
+      </video>
+      <div class="overlay">&#9654;</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Hours & Location ── -->
+<section id="hours">
+  <h2 class="section-title">Hours &amp; Location</h2>
+  <p class="section-sub">Come play — walk-ins always welcome</p>
+  <div class="info-grid">
+
+    <div class="info-card">
+      <h3>&#128336; Opening Hours</h3>
+      <table class="hours-table">
+        <tbody>
+          <tr><td>Monday</td><td>12 PM – 9 PM</td></tr>
+          <tr><td>Tuesday</td><td>12 PM – 9 PM</td></tr>
+          <tr><td>Wednesday</td><td>12 PM – 9 PM</td></tr>
+          <tr><td>Thursday</td><td>12 PM – 9 PM</td></tr>
+          <tr><td>Friday</td><td>12 PM – 11 PM</td></tr>
+          <tr><td>Saturday</td><td>9 AM – 10 PM</td></tr>
+          <tr><td>Sunday</td><td>10 AM – 8 PM</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem; font-size:.82rem; color:#999;">
+        Holiday hours may vary — check announcements.
+      </p>
+    </div>
+
+    <div class="info-card address-block">
+      <h3>&#128205; Find Us</h3>
+      <p>
+        <strong>Oceanside Table Tennis</strong><br>
+        123 Rally Road, Suite 4<br>
+        Springfield, ST 00000<br><br>
+        <strong>Phone:</strong> (555) 012-3456<br>
+        <strong>Email:</strong> info@acettclub.com
+      </p>
+      <a class="map-link" href="https://maps.google.com/?q=123+Rally+Road" target="_blank" rel="noopener">
+        &#128506; Open in Google Maps
+      </a>
+      <p style="margin-top:1.5rem; font-size:.9rem; color:var(--mid);">
+        <strong>Parking:</strong> Free lot behind the building.<br>
+        <strong>Transit:</strong> Bus lines 12 &amp; 47 stop one block away.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>&copy; 2026 <strong>Oceanside Table Tennis</strong> &mdash; All rights reserved.</p>
+  <p style="margin-top:.4rem;">Questions? Email us at <strong>info@acettclub.com</strong></p>
+</footer>
+
+<!-- ── Lightbox ── -->
+<div id="lightbox">
+  <div id="lightbox-inner">
+    <button id="lightbox-close" aria-label="Close">&times;</button>
+  </div>
+</div>
+
+<script>
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a =>
+    a.addEventListener('click', () => navLinks.classList.remove('open'))
+  );
+
+  // Gallery tabs
+  const tabs  = document.querySelectorAll('.tab-btn');
+  const items = document.querySelectorAll('.gallery-item');
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      items.forEach(item => {
+        const show = filter === 'all' || item.dataset.type === filter;
+        item.style.display = show ? 'block' : 'none';
+      });
+    });
+  });
+
+  // Lightbox
+  const lightbox      = document.getElementById('lightbox');
+  const lightboxInner = document.getElementById('lightbox-inner');
+  const closeBtn      = document.getElementById('lightbox-close');
+
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      const src = item.dataset.src;
+      // Clear previous content (keep close btn)
+      Array.from(lightboxInner.children).forEach(c => {
+        if (c !== closeBtn) c.remove();
+      });
+
+      if (item.dataset.type === 'photo' && src) {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = item.querySelector('img')?.alt || '';
+        lightboxInner.appendChild(img);
+        lightbox.classList.add('open');
+      } else if (item.dataset.type === 'video') {
+        const v = item.querySelector('video');
+        const src0 = v?.querySelector('source')?.src;
+        if (src0) {
+          const vid = document.createElement('video');
+          vid.controls = true;
+          vid.autoplay = true;
+          vid.innerHTML = `<source src="${src0}" type="video/mp4">`;
+          lightboxInner.appendChild(vid);
+          lightbox.classList.add('open');
+        }
+      }
+    });
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    const vid = lightboxInner.querySelector('video');
+    if (vid) vid.pause();
+    Array.from(lightboxInner.children).forEach(c => {
+      if (c !== closeBtn) c.remove();
+    });
+  }
+
+  // Highlight today's hours row
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const today = days[new Date().getDay()];
+  document.querySelectorAll('.hours-table tr').forEach(row => {
+    if (row.cells[0]?.textContent.trim() === today) row.classList.add('today');
+  });
+</script>
+</body>
+</html>
